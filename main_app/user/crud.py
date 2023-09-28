@@ -31,6 +31,22 @@ def update_user(user: schemas.UserCreate):
     return "User updated"
 
 
+# Handle stripe webhooks
+def create_user_webhook(data: dict, db: Session):
+    db_user = models.User(id=data["id"], email=data["email"], name=data["name"])
+    db.add(db_user)
+    db.commit()
+    return db_user
+
+
+def update_user_webhook(data: dict, db: Session):
+    db_user = db.query(models.User).filter(models.User.id == data["id"]).first()
+    db_user.email = data["email"]
+    db_user.name = data["name"]
+    db.commit()
+    return db_user
+
+
 # Helper function
 def produce_create_user(data: dict):
     try:

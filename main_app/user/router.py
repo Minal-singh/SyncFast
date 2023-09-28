@@ -1,10 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException
+import stripe
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
+from os import environ
 from ..database import get_db
 from . import schemas, crud
 
 
 router = APIRouter()
+stripe.api_key = environ.get('STRIPE_SECRET_KEY')
+ENDPOINT_SECRET = environ.get('STRIPE_ENDPOINT_SECRET')
 
 
 @router.get("/", response_model=list[schemas.User])
@@ -48,3 +52,31 @@ def update_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
         if db_user:
             raise HTTPException(status_code=400, detail="Email already registered")
     return crud.update_user(user=user)
+
+
+@router.post("/webhook", include_in_schema=False)
+def webhook(payload: dict, request: Request):
+    event = None
+    sig_header = request.headers['STRIPE_SIGNATURE']
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, ENDPOINT_SECRET
+        )
+    except ValueError as e:
+        # Invalid payload
+        raise e
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        raise e
+
+    # Handle the event
+    if event['type'] == 'customer.created':
+        user = event['data']['object']
+        return crud.create_user(user=user)
+    elif event['type'] == 'customer.updated':
+        user = event['data']['object']
+        return crud.create_user(user=user)
+    else:
+        print('Unhandled event type {}'.format(event['type']))
+        return {"msg": "Unhandled event type"}

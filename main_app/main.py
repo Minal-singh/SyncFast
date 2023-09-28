@@ -8,6 +8,6 @@ Base.metadata.create_all(bind=engine)
 app.include_router(user_router, prefix="/user", tags=["user"])
 
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 async def root():
     return {"message": "head to https://localhost:8000/docs for the swagger ui"}
