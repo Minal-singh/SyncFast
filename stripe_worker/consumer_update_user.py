@@ -1,10 +1,12 @@
 import stripe
 import json
-from os import environ
 from confluent_kafka import Consumer
+from dotenv import dotenv_values
+
+environ = dotenv_values()
 
 
-conf = {"bootstrap.servers": "kafka:29092", "group.id": "fastapi-kafka-consumer"}
+conf = {"bootstrap.servers": "localhost:9092", "group.id": "kafka-consumer"}
 stripe.api_key = environ.get("STRIPE_SECRET_KEY")
 
 consumer = Consumer(conf)

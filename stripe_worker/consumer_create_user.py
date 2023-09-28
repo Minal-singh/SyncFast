@@ -1,10 +1,12 @@
 import stripe
 import json
-from os import environ
 from confluent_kafka import Consumer
+from dotenv import dotenv_values
+
+environ = dotenv_values()
 
 
-conf = {"bootstrap.servers": "kafka:29092", "group.id": "fastapi-kafka-consumer"}
+conf = {"bootstrap.servers": "localhost:9092", "group.id": "kafka-consumer"}
 stripe.api_key = environ.get("STRIPE_SECRET_KEY")
 
 consumer = Consumer(conf)
@@ -12,7 +14,7 @@ consumer.subscribe(["create-user-on-stripe"])
 
 
 def create_user(data: dict):
-    stripe.Customer.create(data)
+    stripe.Customer.create(email=data["email"], name=data["name"])
     print({"status": "success", "msg": "Created User"})
 
 

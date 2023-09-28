@@ -1,9 +1,11 @@
 import stripe
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
-from os import environ
+from dotenv import dotenv_values
 from ..database import get_db
 from . import schemas, crud
+
+environ = dotenv_values()
 
 
 router = APIRouter()
@@ -55,13 +57,13 @@ def update_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/webhook", include_in_schema=False)
-def webhook(payload: dict, request: Request):
+async def webhook(request: Request):
     event = None
-    sig_header = request.headers['STRIPE_SIGNATURE']
-
+    sig_header = request.headers['stripe-signature']
+    body = await request.body()
     try:
         event = stripe.Webhook.construct_event(
-            payload, sig_header, ENDPOINT_SECRET
+            body, sig_header, ENDPOINT_SECRET
         )
     except ValueError as e:
         # Invalid payload
@@ -73,10 +75,10 @@ def webhook(payload: dict, request: Request):
     # Handle the event
     if event['type'] == 'customer.created':
         user = event['data']['object']
-        return crud.create_user(user=user)
+        return crud.create_user_webhook(user=user)
     elif event['type'] == 'customer.updated':
         user = event['data']['object']
-        return crud.create_user(user=user)
+        return crud.create_user_webhook(user=user)
     else:
         print('Unhandled event type {}'.format(event['type']))
         return {"msg": "Unhandled event type"}

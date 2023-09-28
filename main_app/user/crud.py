@@ -4,7 +4,7 @@ from confluent_kafka import Producer
 from . import models, schemas
 
 
-producer_conf = {"bootstrap.servers": "kafka:29092", "client.id": "fastapi-kafka-api"}
+producer_conf = {"bootstrap.servers": "localhost:9092", "client.id": "fastapi-kafka-api"}
 
 producer = Producer(producer_conf)
 
@@ -52,6 +52,7 @@ def produce_create_user(data: dict):
     try:
         data = json.dumps(data).encode("utf-8")
         producer.produce("create-user-on-stripe", value=data)
+        producer.flush()
         print({"status": "success", "create-user": data})
     except Exception as e:
         print({"status": "error", "message": str(e)})
@@ -61,6 +62,7 @@ def produce_update_user(data: dict):
     try:
         data = json.dumps(data).encode("utf-8")
         producer.produce("update-user-on-stripe", value=data)
+        producer.flush()
         print({"status": "success", "update-user": data})
     except Exception as e:
         print({"status": "error", "message": str(e)})
