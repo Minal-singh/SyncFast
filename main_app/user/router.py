@@ -56,7 +56,7 @@ def update_user(user_id: str, user: schemas.UserCreate, db: Session = Depends(ge
     return crud.update_user(id=user_id, user=user)
 
 
-@router.post("/webhook", include_in_schema=False)
+@router.post("/webhook", include_in_schema=False, status_code=200)
 async def webhook(request: Request, db: Session = Depends(get_db)):
     event = None
     sig_header = request.headers['stripe-signature']
