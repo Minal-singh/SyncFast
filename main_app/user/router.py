@@ -45,19 +45,19 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 
 @router.put("/{user_id}")
-def update_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user(db, id=user.id)
+def update_user(user_id: str, user: schemas.UserCreate, db: Session = Depends(get_db)):
+    db_user = crud.get_user(db, user_id=user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
     if user.email.lower() != db_user.email.lower():
         db_user = crud.get_user_by_email(db, email=user.email)
         if db_user:
             raise HTTPException(status_code=400, detail="Email already registered")
-    return crud.update_user(user=user)
+    return crud.update_user(id=user_id, user=user)
 
 
 @router.post("/webhook", include_in_schema=False)
-async def webhook(request: Request):
+async def webhook(request: Request, db: Session = Depends(get_db)):
     event = None
     sig_header = request.headers['stripe-signature']
     body = await request.body()
@@ -65,20 +65,16 @@ async def webhook(request: Request):
         event = stripe.Webhook.construct_event(
             body, sig_header, ENDPOINT_SECRET
         )
-    except ValueError as e:
-        # Invalid payload
-        raise e
-    except stripe.error.SignatureVerificationError as e:
-        # Invalid signature
-        raise e
+    except Exception as e:
+        return HTTPException(status_code=400, detail=str(e))
 
     # Handle the event
     if event['type'] == 'customer.created':
         user = event['data']['object']
-        return crud.create_user_webhook(user=user)
+        return crud.create_user_webhook(user, db)
     elif event['type'] == 'customer.updated':
         user = event['data']['object']
-        return crud.create_user_webhook(user=user)
+        return crud.update_user_webhook(user, db)
     else:
         print('Unhandled event type {}'.format(event['type']))
         return {"msg": "Unhandled event type"}

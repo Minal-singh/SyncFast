@@ -26,8 +26,10 @@ def create_user(user: schemas.UserCreate):
     return "User created"
 
 
-def update_user(user: schemas.UserCreate):
-    produce_update_user(dict(user))
+def update_user(id, user: schemas.UserCreate):
+    data = dict(user)
+    data["id"] = id
+    produce_update_user(data)
     return "User updated"
 
 
@@ -36,7 +38,7 @@ def create_user_webhook(data: dict, db: Session):
     db_user = models.User(id=data["id"], email=data["email"], name=data["name"])
     db.add(db_user)
     db.commit()
-    return db_user
+    return
 
 
 def update_user_webhook(data: dict, db: Session):
@@ -44,7 +46,7 @@ def update_user_webhook(data: dict, db: Session):
     db_user.email = data["email"]
     db_user.name = data["name"]
     db.commit()
-    return db_user
+    return
 
 
 # Helper function
