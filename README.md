@@ -62,9 +62,8 @@ docker-compose up
 2. In Terminal2 run
 ```
 source env/bin/activate
-cd main_app
-pip install -r requirements.txt
-uvicorn main:app --reload
+pip install -r main_app/requirements.txt
+uvicorn main_app.main:app --reload
 ```
 3. In Terminal3 run
 ```
