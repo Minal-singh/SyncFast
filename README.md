@@ -1,4 +1,4 @@
-# zenskar-assignment
+# fastapi-stripe-integration
 #### Simple FastAPI integration with Stripe using Kafka as messaging queue and SQLite as database.
 ## Flow Diagram
 <img src="Flow.png">
@@ -37,12 +37,12 @@ and add events customer.created and customer.updated, also copy signing secret w
 
 **2. Clone this project**
 ```
-git clone https://github.com/Minal-singh/zenskar-assignment.git
+git clone https://github.com/Minal-singh/fastapi-stripe-integration.git
 ```
 
 Then, Enter the project
 ```
-cd zenskar-assignment
+cd fastapi-stripe-integration
 ```
 **3. Create a Virtual Environment**
 
@@ -54,7 +54,7 @@ python3 -m venv env
 
 Add Stripe secret key and Stripe enpoint secret key(which we get after creating webhook) to .env
 
-**5. Now we will require 5 terminals in zenskar-assignment folder. Let's name them Terminal1, Terminal2, ..... for simplicity**
+**5. Now we will require 5 terminals in fastapi-stripe-integration folder. Let's name them Terminal1, Terminal2, ..... for simplicity**
 1. In Terminal1 run
 ```
 docker-compose up
