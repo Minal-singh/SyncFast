@@ -1,36 +1,37 @@
-# fastapi-stripe-integration
-#### Simple FastAPI integration with Stripe using Kafka as messaging queue and SQLite as database.
-## Flow Diagram
-<img src="Flow.png">
+<div align="center">
+      <h1>FastAPI Microservice</h1>
+</div>
 
+
+# Description
+This project integrates FastAPI with Kafka for efficient asynchronous message handling, leveraging Docker to containerize the Kafka environment for scalability. It also includes Stripe integration with webhooks to ensure seamless synchronization of user data between Stripe and the local database, using Kafka consumers to maintain data consistency.
+
+# Features
+- Integrated **FastAPI** with **Kafka** for asynchronous message processing in distributed systems.
+- Used **Docker** to containerize the Kafka environment, ensuring scalability and consistency.
+- Implemented **Stripe integration** with webhooks for syncing user data between Stripe and the local database.
+- Ensured data consistency across systems using **Kafka consumers** for real-time updates.
+# Flow
+ <img src="Flow.png">
+ 
+# Tech Used
+ ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi) ![Kafka](https://img.shields.io/badge/kafka-1234?style=for-the-badge&logo=apachekafka&color=333333) ![Docker](https://img.shields.io/badge/docker-1234?style=for-the-badge&logo=docker&logoColor=ffdd54&color=3399CC) ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white) ![Stripe](https://img.shields.io/badge/stripe-1234?style=for-the-badge&logo=stripe&color=8CAAE6)
+      
 ### Pre-Requisites:
-1. Install Git Version Control
-[ https://git-scm.com/ ]
+1. Install [Git](https://git-scm.com/) Version Control
+2. Install [Python](https://www.python.org/downloads/) Latest Version
 
-2. Install Python Latest Version
-[ https://www.python.org/downloads/ ]
-      #### Use python 3.11 or above
-
-3. Install Pip (Package Manager)
-[ https://pip.pypa.io/en/stable/installing/ ]
-
-4. Install Docker Desktop
-[https://www.docker.com/products/docker-desktop/]
-
-5. Install Node.js (For using localtunnel)
-[https://nodejs.org/en/download]
-
+#### Use python 3.11 or above
+3. Install [Pip](https://pip.pypa.io/en/stable/installing/) (Package Manager)
+4. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+5. Install [Node.js](https://nodejs.org/en/download) (For using localtunnel)
 6. Install Localtunnel
 ```
 npm install -g localtunnel
 ```
 
-7. Create Stripe test account and copy secret key
-[https://dashboard.stripe.com/register]
-
-8. Create a webhook on Stripe with url
-[https://test-stripe.loca.lt/user/webhook]
-and add events customer.created and customer.updated, also copy signing secret which we will require to verify webhook requests
+7. Create [Stripe](https://dashboard.stripe.com/register) test account and copy secret key
+8. Create a [webhook](https://test-stripe.loca.lt/user/webhook) on Stripe with url and add events customer.created and customer.updated, also copy signing secret which we will require to verify webhook requests
 
 ### Installation
 **1. Navigate to directory where you want to save the project**
@@ -83,4 +84,4 @@ python3 consumer_update_user.py
 ```
 lt --port 8000 --subdomain test-stripe
 ```
-Open [https://test-stripe.loca.lt/docs] in any browser for api documentation
+Open [URL](https://test-stripe.loca.lt/docs) in any browser for api documentation
