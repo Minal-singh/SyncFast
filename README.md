@@ -1,5 +1,5 @@
 <div align="center">
-      <h1>FastAPI Microservice</h1>
+      <h1>SyncFast</h1>
 </div>
 
 
